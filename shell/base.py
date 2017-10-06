@@ -20,21 +20,15 @@ class BaseShell(cmd.Cmd):
     prompt = 'K>'
     show_subcommands = ['exploits']
 
-    def do_exploit(self, exploit_name):
+    def do_exploit(self, use_path):
         try:
-            exploit_shell = ExploitShell(exploit_name)
+            exploit_shell = ExploitShell(use_path)
             exploit_shell.cmdloop()
         except shell.errors.InvalidCommandArgument as err:
             print(str(err))
 
-    def help_exploit(self):
-        print('exploit <exploit path>')
-        print('    switches to exploit configuration mode')
 
-    def do_show_exploits(self, exploit_path):
-        pass
-
-    def complete_show_exploits(self, text, line, begidx, endidx):
+    def complete_exploit(self, text, line, begidx, endidx):
         before_arg = line.rfind(' ', 0, begidx)
         if before_arg == -1:
             return  # arg not found
@@ -50,6 +44,14 @@ class BaseShell(cmd.Cmd):
                 completions.append(path.replace(fixed, '', 1))
 
         return completions
+
+    def help_exploit(self):
+        print('exploit <exploit path>')
+        print('    switches to exploit configuration mode')
+
+    def do_show_exploits(self, exploit_path):
+        pass
+
 
     def emptyline(self):
         pass
