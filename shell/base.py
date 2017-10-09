@@ -8,23 +8,21 @@ except ImportError:
 import cmd
 import glob
 import os
-import logging
 
-import shell.errors
-
+import core.errors
 from config import KojikoConfig
 from shell.exploit import ExploitShell
 
 
 class BaseShell(cmd.Cmd):
-    prompt = 'K>'
+    prompt = 'K:>'
     show_subcommands = ['exploits']
 
     def do_exploit(self, use_path):
         try:
             exploit_shell = ExploitShell(use_path)
             exploit_shell.cmdloop()
-        except shell.errors.InvalidCommandArgument as err:
+        except core.errors.InvalidCommandArgument as err:
             print(str(err))
 
 
@@ -51,7 +49,6 @@ class BaseShell(cmd.Cmd):
 
     def do_show_exploits(self, exploit_path):
         pass
-
 
     def emptyline(self):
         pass
