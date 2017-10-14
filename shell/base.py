@@ -22,7 +22,9 @@ class BaseShell(cmd.Cmd):
         try:
             exploit_shell = ExploitShell(use_path)
             exploit_shell.cmdloop()
-        except core.errors.InvalidCommandArgument as err:
+        except core.errors.InvalidCommandArgumentError as err:
+            print(str(err))
+        except core.errors.ModuleError as err:
             print(str(err))
 
 
@@ -47,8 +49,6 @@ class BaseShell(cmd.Cmd):
         print('exploit <exploit path>')
         print('    switches to exploit configuration mode')
 
-    def do_show_exploits(self, exploit_path):
-        pass
 
     def emptyline(self):
         pass

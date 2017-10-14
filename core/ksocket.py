@@ -14,7 +14,7 @@ class KSocket:
         while bytes_recd < nbytes:
             chunk = self.sock.recv(min(nbytes - bytes_recd, 2048))
             if not chunk:
-                raise core.errors.ConnectionTerminated('Connection terminated in readex()')
+                raise core.errors.ConnectionTerminatedError('Connection terminated in readex()')
             chunks += chunk
             bytes_recd = bytes_recd + len(chunk)
         return chunks
@@ -24,7 +24,7 @@ class KSocket:
         while total_sent < len(msg):
             sent = self.sock.send(msg[total_sent:])
             if sent == 0:
-                raise core.errors.ConnectionTerminated('Connection terminated in sendex()')
+                raise core.errors.ConnectionTerminatedError('Connection terminated in sendex()')
             total_sent += sent
 
 
