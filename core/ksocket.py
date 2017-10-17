@@ -27,4 +27,7 @@ class KSocket:
                 raise core.errors.ConnectionTerminatedError('Connection terminated in sendex()')
             total_sent += sent
 
+    def connect(self, addr):
+        self.sock.connect(addr)
+
 

@@ -20,7 +20,6 @@ class KModuleLoader:
             os.chdir(path)
 
             try:
-                print("import: ", exploit_file)
                 sys.path.append(os.getcwd())
                 module = importlib.import_module(exploit_file)
                 #module = __import__(exploit_file)
