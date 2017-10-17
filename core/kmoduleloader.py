@@ -8,21 +8,31 @@ import sys
 import inspect
 import importlib
 
+
 class KModuleLoader:
     def __init__(self):
         pass
+
+    def list_exploits(self):
+        print('Listing all exploits')
+
+    def info_exploit(self, path):
+        print('Showing exploit info')
 
     def load_exploit(self, path: str) -> kexploit.KExploit:
         exploit_file = os.path.basename(path)
         save_dir = os.getcwd()
         save_syspath = sys.path
         try:
-            os.chdir(path)
+            try:
+                os.chdir(path)
+            except FileNotFoundError:
+                raise core.errors.ModuleError('Cannot load module \'{}\'. '
+                                              'Invalid exploit identifier'.format(path))
 
             try:
                 sys.path.append(os.getcwd())
                 module = importlib.import_module(exploit_file)
-                #module = __import__(exploit_file)
             except ImportError as err:
                 raise core.errors.ModuleError(str(err) + '\nCannot load module \'{}\'.'
                                               ' Cannot import {}.py file.'.format(path, exploit_file))

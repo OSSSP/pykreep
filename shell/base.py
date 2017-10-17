@@ -1,26 +1,36 @@
-try:
-    import gnureadline
-    import sys
-    sys.modules['readline'] = gnureadline
-except ImportError:
-    pass
-
-import cmd
+import cmd2
 import glob
 import os
+from shell.util import print_err
 
 import core.errors
 from config import KojikoConfig
 from shell.exploit import ExploitShell
+from core.kmoduleloader import KModuleLoader
 
-
-class BaseShell(cmd.Cmd):
+class BaseShell(cmd2.Cmd):
     prompt = 'K:>'
     show_subcommands = ['exploits']
 
-    def do_exploit(self, use_path):
+    @cmd2.options([
+        cmd2.make_option('-l', '--list', action='store_true', help='Lists all known exploits'),
+        cmd2.make_option('-i', '--info', action='store_true', help='Shows specific exploit info')
+    ], arg_desc='\nRun/List/Describe exploit')
+    def do_exploit(self, use_path, opts=None):
+        loader = KModuleLoader()
+        if opts.list:
+            return loader.list_exploits()
+        elif opts.info:
+            if not use_path:
+                return print_err('No exploit identifier provided for info')
+            else:
+                return loader.info_exploit(use_path[0])
+
+        if not use_path:
+            return print_err('Specify exploit identifier')
+
         try:
-            exploit_shell = ExploitShell(use_path)
+            exploit_shell = ExploitShell(use_path[0])
             exploit_shell.cmdloop()
         except core.errors.InvalidCommandArgumentError as err:
             print(str(err))
@@ -45,16 +55,17 @@ class BaseShell(cmd.Cmd):
 
         return completions
 
-    def help_exploit(self):
-        print('exploit <exploit path>')
-        print('    switches to exploit configuration mode')
-
-
     def emptyline(self):
         pass
 
-    def do_EOF(self, line):
-        return True
+    #def do_EOF(self, line):
+    #    return True
 
-    def postloop(self):
-        print()
+    def preloop(self):
+        print('            _ _ _         \n'        
+              '  /\ /\___ (_|_) | _____  \n'
+              ' / //_/ _ \| | | |/ / _ \ \n'
+              '/ __ \ (_) | | |   < (_) |\n'
+              '\/  \/\___// |_|_|\_\___/ \n'
+              '         |__/             \n'
+              'Ctrl-D or quit to exit environment\n')
