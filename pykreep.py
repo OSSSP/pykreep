@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from config import KojikoConfig
+from config import KreepConfig
 from shell.base import BaseShell
 
 

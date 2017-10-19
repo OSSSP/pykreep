@@ -1,6 +1,6 @@
 import core.exploit.kexploit as kexploit
 import core.errors
-from config import KojikoConfig
+from config import KreepConfig
 
 import os
 import os.path

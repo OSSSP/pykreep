@@ -4,7 +4,7 @@ import os
 from shell.util import print_err
 
 import core.errors
-from config import KojikoConfig
+from config import KreepConfig
 from shell.exploit import ExploitShell
 from core.kmoduleloader import KModuleLoader
 
@@ -48,7 +48,7 @@ class BaseShell(cmd2.Cmd):
         pattern = arg + '*'
         completions = []
         # iter all exploits withing exploits_path
-        for path in [match for match in glob.glob(pattern) if match.startswith(KojikoConfig.exploits_path)]:
+        for path in [match for match in glob.glob(pattern) if match.startswith(KreepConfig.exploits_path)]:
             if os.path.isdir(path):
                 path = path + '/'
                 completions.append(path.replace(fixed, '', 1))
@@ -62,10 +62,4 @@ class BaseShell(cmd2.Cmd):
     #    return True
 
     def preloop(self):
-        print('            _ _ _         \n'        
-              '  /\ /\___ (_|_) | _____  \n'
-              ' / //_/ _ \| | | |/ / _ \ \n'
-              '/ __ \ (_) | | |   < (_) |\n'
-              '\/  \/\___// |_|_|\_\___/ \n'
-              '         |__/             \n'
-              'Ctrl-D or quit to exit environment\n')
+        print('Ctrl-D or quit to exit environment\n')
