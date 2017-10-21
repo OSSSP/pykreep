@@ -20,6 +20,10 @@ class KModuleLoader:
         print('Showing exploit info')
 
     def load_exploit(self, path: str) -> kexploit.KExploit:
+        if path.endswith('/'):
+            path = path[:-1]
+        path = os.path.join(KreepConfig.exploits_path, path)
+        
         exploit_file = os.path.basename(path)
         save_dir = os.getcwd()
         save_syspath = sys.path

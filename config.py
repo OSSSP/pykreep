@@ -9,7 +9,7 @@ class KreepConfig:
     ''' Paths '''
     exploits_path = 'exploits'
     log_path = '.'
-    log_name = 'kojiko.log'
+    log_name = 'pykreep.log'
 
 
 logging.basicConfig(

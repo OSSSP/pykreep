@@ -1,14 +1,18 @@
 import cmd2
 import glob
 import os
-from shell.util import print_err
+
+from shell.abstract import AbstractShell
 
 import core.errors
 from config import KreepConfig
 from shell.exploit import ExploitShell
 from core.kmoduleloader import KModuleLoader
 
-class BaseShell(cmd2.Cmd):
+from shell.util import print_err
+
+
+class BaseShell(AbstractShell):
     prompt = 'K:>'
     show_subcommands = ['exploits']
 
@@ -22,7 +26,7 @@ class BaseShell(cmd2.Cmd):
             return loader.list_exploits()
         elif opts.info:
             if not use_path:
-                return print_err('No exploit identifier provided for info')
+                return print_err('Specify exploit identifier')
             else:
                 return loader.info_exploit(use_path[0])
 
@@ -33,27 +37,32 @@ class BaseShell(cmd2.Cmd):
             exploit_shell = ExploitShell(use_path[0])
             exploit_shell.cmdloop()
         except core.errors.InvalidCommandArgumentError as err:
-            print(str(err))
+            print_err(str(err))
         except core.errors.ModuleError as err:
-            print(str(err))
+            print_err(str(err))
 
 
     def complete_exploit(self, text, line, begidx, endidx):
-        before_arg = line.rfind(' ', 0, begidx)
-        if before_arg == -1:
-            return  # arg not found
+        cur_dir = os.getcwd()
+        try:
+            os.chdir(KreepConfig.exploits_path)
+            before_arg = line.rfind(' ', 0, begidx)
+            if before_arg == -1:
+                return  # arg not found
 
-        fixed = line[before_arg + 1:begidx]  # fixed portion of the arg
-        arg = line[before_arg + 1:endidx]
-        pattern = arg + '*'
-        completions = []
-        # iter all exploits withing exploits_path
-        for path in [match for match in glob.glob(pattern) if match.startswith(KreepConfig.exploits_path)]:
-            if os.path.isdir(path):
-                path = path + '/'
-                completions.append(path.replace(fixed, '', 1))
+            fixed = line[before_arg + 1:begidx]  # fixed portion of the arg
+            arg = line[before_arg + 1:endidx]
+            pattern = arg + '*'
+            completions = []
+            # iter all exploits withing exploits_path
+            for path in [match for match in glob.glob(pattern)]: #if match.startswith(KreepConfig.exploits_path)]:
+                if os.path.isdir(path) and '__pycache__' not in os.path.basename(path):
+                    path = path + '/'
+                    completions.append(path.replace(fixed, '', 1))
 
-        return completions
+            return completions
+        finally:
+            os.chdir(cur_dir)
 
     def emptyline(self):
         pass

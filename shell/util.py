@@ -10,4 +10,4 @@ def color_print(string, color):
 
 
 def print_err(err):
-    color_print(err, Fore.RED)
+    color_print(str(err), Fore.RED)
